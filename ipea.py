@@ -47,7 +47,7 @@ money = st.number_input("insira o montate em reais: ")
 
 def calculate(df1, radio, init_date, final_date, money):
     try:
-        if radio == 'igpm':
+        if radio == 'IGP-M':
             init_datetime = datetime.datetime.strptime(str(init_date)[:-3], '%Y-%m') - datetime.timedelta(days=31)
             final_datetime = datetime.datetime.strptime(str(final_date)[:-3], '%Y-%m')
             div = df1[ df1['data'] == final_datetime ]['igpm'].values / df1[ df1['data'] == init_datetime  ]['igpm'].values     
