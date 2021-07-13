@@ -15,7 +15,7 @@ df.columns = ['data', 'ipca', 'igpm']
 # throw away useless row
 df = df.drop(0)
 
-# fill empty rows with 0
+# fill empty values with 0
 df[['ipca', 'igpm']] = df[['ipca', 'igpm']].fillna(0)
 
 # change date to datetime format
