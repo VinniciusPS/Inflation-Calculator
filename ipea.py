@@ -41,7 +41,7 @@ st.header('Calculadora de Correção Monetária')
 radio = st.radio('Escolha o índice: ', ('IPCA', 'IGP-M'))
 init_date = st.date_input('Escolha a data inicial: ', min_value=datetime.date(1996,1,1), max_value=datetime.date(d1.year,d1.month-1,1))
 final_date = st.date_input('Escolha a data final: ',min_value=datetime.date(1996,1,1), max_value=datetime.date(d1.year,d1.month-1,1))
-money = st.number_input("insira o montate em reais: ")
+money = st.number_input('Insira o montante em reais: ')
 
 def calculate(df, radio, init_date, final_date, money):
     try:
