@@ -50,7 +50,7 @@ def calculate(df, radio, init_date, final_date, money):
             final_datetime = datetime.datetime.strptime(str(final_date)[:-3], '%Y-%m')
             div = df[ df['data'] == final_datetime ]['igpm'].values / df[ df['data'] == init_datetime  ]['igpm'].values 
             results = money * div[0]
-            str_results = str('{0:.2f}'.format(results))
+            str_results = 'Valor corrigido na data final: R$ {0:.2f}'.format(results)
 
             return ( st.write(str_results)  )
         else:
@@ -58,7 +58,7 @@ def calculate(df, radio, init_date, final_date, money):
             final_datetime = datetime.datetime.strptime(str(final_date)[:-3], '%Y-%m')
             div = df[ df['data'] == final_datetime ]['ipca'].values / df[ df['data'] == init_datetime  ]['ipca'].values
             results = money * div[0]
-            str_results = str('{0:.2f}'.format(results))
+            str_results = 'Valor corrigido na data final: R$ {0:.2f}'.format(results)
 
             return ( st.write(str_results)  )
     except:
