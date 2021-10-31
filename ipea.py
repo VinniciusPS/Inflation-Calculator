@@ -32,15 +32,13 @@ df[['ipca', 'igpm']] = df[['ipca', 'igpm']].astype('float')
 df[['ipca', 'igpm']] = df[['ipca', 'igpm']].apply(lambda x: x/10000)
 
 # today's date
-d1 = datetime.datetime.now()
+d1 = datetime.date.today()
 
 ### STREAMLIT ###
-
 st.header('Calculadora de Correção Monetária')
-
 radio = st.radio('Escolha o índice: ', ('IPCA', 'IGP-M'))
-init_date = st.date_input('Escolha a data inicial: ', min_value=datetime.date(1996,1,1), max_value=datetime.date(d1.year,d1.month-1,1))
-final_date = st.date_input('Escolha a data final: ',min_value=datetime.date(1996,1,1), max_value=datetime.date(d1.year,d1.month-1,1))
+init_date = st.date_input('Escolha a data inicial: ', min_value=datetime.date(1996,1,1), max_value=d1)
+final_date = st.date_input('Escolha a data final: ',min_value=datetime.date(1996,1,1), max_value=d1)
 money = st.number_input('Insira o montante em reais: ')
 
 def calculate(df, radio, init_date, final_date, money):
@@ -63,5 +61,5 @@ def calculate(df, radio, init_date, final_date, money):
             return ( st.write(str_results)  )
     except:
         st.write('insira uma data válida')
-    
+
 calculate(df, radio, init_date, final_date, money)
