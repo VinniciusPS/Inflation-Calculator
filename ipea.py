@@ -2,7 +2,6 @@ import pandas as pd
 
 import datetime
 import streamlit as st 
-import matplotlib.pyplot as plt
 
 # raw data
 raw = pd.read_html("http://www.ipeadata.gov.br/ExibeSerie.aspx?stub=1&serid37796=37796&serid36482=36482", attrs = {'class':'dxgvTable'})
@@ -45,17 +44,21 @@ final_date = st.date_input('Escolha a data final: ',min_value=datetime.date(1996
 
 def calculate(df, radio, init_date, final_date, money):
     try:
+        init_datetime = datetime.datetime.strptime(str(init_date)[:-3], '%Y-%m') - datetime.timedelta(days=31)
+        final_datetime = datetime.datetime.strptime(str(final_date)[:-3], '%Y-%m')
+
+        # Filtrar intervalo de datas
+        df_filtered = df[(df['data'] >= init_datetime) & (df['data'] <= final_datetime)]
+        
         if radio == 'IGP-M':
-            init_datetime = datetime.datetime.strptime(str(init_date)[:-3], '%Y-%m') - datetime.timedelta(days=31)
-            final_datetime = datetime.datetime.strptime(str(final_date)[:-3], '%Y-%m')
             div = df[ df['data'] == final_datetime ]['igpm'].values / df[ df['data'] == init_datetime  ]['igpm'].values 
             results = money * div[0]
             str_results = 'Valor corrigido na data final: R$ {0:.2f}'.format(results)
 
-            return ( st.write(str_results)  )
+            # Exibir o resultado
+            st.write(str_results)
+            
         else:
-            init_datetime = datetime.datetime.strptime(str(init_date)[:-3], '%Y-%m') - datetime.timedelta(days=31)
-            final_datetime = datetime.datetime.strptime(str(final_date)[:-3], '%Y-%m')
             div = df[ df['data'] == final_datetime ]['ipca'].values / df[ df['data'] == init_datetime  ]['ipca'].values
             results = money * div[0]
             str_results = 'Valor corrigido na data final: R$ {0:.2f}'.format(results)
@@ -63,19 +66,9 @@ def calculate(df, radio, init_date, final_date, money):
             # Exibir o resultado
             st.write(str_results)
             
-            # Gerar gráfico de barras
-            dates = [init_datetime, final_datetime]
-            values = [df[df['data'] == init_datetime]['ipca'].values[0], df[df['data'] == final_datetime]['ipca'].values[0]]
-            
-            fig, ax = plt.subplots()
-            ax.bar(dates, values, color=['blue', 'green'])
-            for i, v in enumerate(values):
-                ax.text(dates[i], v + 0.0002, f'{v:.4f}', ha='center', va='bottom', fontsize=10)
-            
-            ax.set_title(f'Variação do IPCA de {init_datetime.strftime("%Y-%m")} a {final_datetime.strftime("%Y-%m")}')
-            ax.set_xlabel('Data')
-            ax.set_ylabel('IPCA')
-            st.pyplot(fig)
+             # Gráfico com st.bar_chart
+            chart_df = df_filtered[['data', 'ipca']].set_index('data')
+            st.bar_chart(chart_df)
 
             #return ( st.write(str_results)  )
     except:
