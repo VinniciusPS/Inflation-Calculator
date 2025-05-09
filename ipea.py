@@ -37,9 +37,10 @@ d1 = datetime.date.today()
 ### STREAMLIT ###
 st.header('Calculadora de Correção Monetária')
 radio = st.radio('Escolha o índice: ', ('IPCA', 'IGP-M'))
+money = st.number_input('Insira o montante em reais: ')
 init_date = st.date_input('Escolha a data inicial: ', min_value=datetime.date(1996,1,1), max_value=d1)
 final_date = st.date_input('Escolha a data final: ',min_value=datetime.date(1996,1,1), max_value=d1)
-money = st.number_input('Insira o montante em reais: ')
+
 
 def calculate(df, radio, init_date, final_date, money):
     try:
@@ -58,7 +59,24 @@ def calculate(df, radio, init_date, final_date, money):
             results = money * div[0]
             str_results = 'Valor corrigido na data final: R$ {0:.2f}'.format(results)
 
-            return ( st.write(str_results)  )
+            # Exibir o resultado
+            st.write(str_results)
+            
+            # Gerar gráfico de barras
+            dates = [init_datetime, final_datetime]
+            values = [df[df['data'] == init_datetime]['ipca'].values[0], df[df['data'] == final_datetime]['ipca'].values[0]]
+            
+            fig, ax = plt.subplots()
+            ax.bar(dates, values, color=['blue', 'green'])
+            for i, v in enumerate(values):
+                ax.text(dates[i], v + 0.0002, f'{v:.4f}', ha='center', va='bottom', fontsize=10)
+            
+            ax.set_title(f'Variação do IPCA de {init_datetime.strftime("%Y-%m")} a {final_datetime.strftime("%Y-%m")}')
+            ax.set_xlabel('Data')
+            ax.set_ylabel('IPCA')
+            st.pyplot(fig)
+
+            #return ( st.write(str_results)  )
     except:
         st.write('insira uma data válida')
 
