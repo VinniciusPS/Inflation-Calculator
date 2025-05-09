@@ -49,28 +49,24 @@ def calculate(df, radio, init_date, final_date, money):
 
         # Filtrar intervalo de datas
         df_filtered = df[(df['data'] >= init_datetime) & (df['data'] <= final_datetime)]
+        df_filtered = df_filtered.sort_values('data')
         
+        # Aplica o índice cumulativo para corrigir o valor mês a mês
         if radio == 'IGP-M':
-            div = df[ df['data'] == final_datetime ]['igpm'].values / df[ df['data'] == init_datetime  ]['igpm'].values 
-            results = money * div[0]
-            str_results = 'Valor corrigido na data final: R$ {0:.2f}'.format(results)
-
-            # Exibir o resultado
-            st.write(str_results)
-            
+            df_filtered['fator'] = df_filtered['igpm'] / df_filtered.iloc[0]['igpm']
         else:
-            div = df[ df['data'] == final_datetime ]['ipca'].values / df[ df['data'] == init_datetime  ]['ipca'].values
-            results = money * div[0]
-            str_results = 'Valor corrigido na data final: R$ {0:.2f}'.format(results)
+            df_filtered['fator'] = df_filtered['ipca'] / df_filtered.iloc[0]['ipca']
 
-            # Exibir o resultado
-            st.write(str_results)
-            
-             # Gráfico com st.bar_chart
-            chart_df = df_filtered[['data', 'ipca']].set_index('data')
-            st.bar_chart(chart_df)
+        df_filtered['valor_corrigido'] = df_filtered['fator'] * money
 
-            #return ( st.write(str_results)  )
+        # Resultado final
+        valor_final = df_filtered.iloc[-1]['valor_corrigido']
+        st.write(f'Valor corrigido na data final: R$ {valor_final:.2f}')
+
+        # Exibe gráfico de barras com o valor corrigido mês a mês
+        chart_df = df_filtered[['data', 'valor_corrigido']].set_index('data')
+        st.bar_chart(chart_df)
+        
     except:
         st.write('insira uma data válida')
 
