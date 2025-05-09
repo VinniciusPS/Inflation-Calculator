@@ -2,6 +2,7 @@ import pandas as pd
 
 import datetime
 import streamlit as st 
+import matplotlib.pyplot as plt
 
 # raw data
 raw = pd.read_html("http://www.ipeadata.gov.br/ExibeSerie.aspx?stub=1&serid37796=37796&serid36482=36482", attrs = {'class':'dxgvTable'})
