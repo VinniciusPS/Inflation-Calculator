@@ -57,7 +57,7 @@ def calculate(df, radio, init_date, final_date, money):
         else:
             df_filtered['fator'] = df_filtered['ipca'] / df_filtered.iloc[0]['ipca']
 
-        df_filtered['valor_corrigido'] = df_filtered['fator'] * money
+        df_filtered['valor_corrigido'] = (df_filtered['fator'] * money).round(2)
 
         # Resultado final
         valor_final = df_filtered.iloc[-1]['valor_corrigido']
